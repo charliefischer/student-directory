@@ -13,37 +13,80 @@
 #   {name: "Norman Bates", cohort: :november}
 # ]
 def input_students
-  puts "Please enter the names of the students"
-  puts "To finish, just hit return twice"
+  puts "To finish, hit enter with no name present"
+  puts "If you make a typo, enter 'typo'"
   #create an empty array
   students = []
-  #get the names
-  name = gets.chomp
-  #while the name is not empty, repeat this code
-  while !name.empty? do
-    #add the student has to the array
-    students << {name: name, cohort: :november}
+  loop do
+    puts "Please enter the name of the student"
+    name = gets.chomp.to_sym
+    if name.empty?
+      break
+    end
+    puts "Please enter their cohort start date"
+    cohort = gets.chomp.to_sym
+    if cohort.empty?
+      cohort = "N/A"
+    end
+
+    students << {name: name, cohort: cohort}
     puts "Now we have #{students.count} students"
-    #get another nae from the user
-    name = gets.chomp
   end
-  #return the array of students
   students
 end
+
+# def typo
+#   if country = "typo" || hobbies = "typo" || cohort = "typo" || name ="typo"
+#     puts "sucker"
+#   end
+# #end
+
 def print_header
 puts "The students of Villains Academy"
 puts "----------"
 end
-def print(names)
-names.each do |student|
-  puts "#{student[:name]} (#{student[:cohort]} cohort)"
+
+# def print(names)
+#   names.each_with_index do |student, index|
+#     puts " #{index}. #{student[:name]} (#{student[:cohort]} cohort)"
+#   end
+# end
+
+# def print(names)
+#   names.each do |student|
+#   puts "#{student[:name]} (#{student[:cohort]} cohort)"
+#   end
+# end
+
+# def print(names)
+#   names.each do |student|
+#     if student[:name].chars.first == "A"
+#       puts "#{student[:name]} (#{student[:cohort]} cohort)"
+#     end
+#   end
+# end
+
+# def print(names)
+#   names.each do |student|
+#     if student[:name].length < 12
+#       puts "#{student[:name]} (#{student[:cohort]} cohort)"
+#     end
+#   end
+# end
+
+def printer(names)
+  i = 0
+  until i == names.length
+    puts ("#{names[i][:name]} (#{names[i][:cohort]} cohort)").center(40)
+    i += 1
+  end
 end
-end
+
 def print_footer(names)
 puts "Overall, we have #{names.count} great students"
 end
 #nothing happens until we call the methods
 students = input_students
 print_header
-print(students)
+printer(students)
 print_footer(students)
