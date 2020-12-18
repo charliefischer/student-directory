@@ -76,15 +76,19 @@ def save_students
   end
 end
 
-
-
+#def load_students(filename = gets.chomp)
+#  File.open(filename,"r").readlines.each do |line|
+#      @name, @cohort = line.chomp.split(',')
+#      students_push
+#  end
+#end
+#using CSV
+require 'csv'
 def load_students(filename = gets.chomp)
-  File.open(filename,"r").readlines.each do |line|
-      @name, @cohort = line.chomp.split(',')
-      students_push
+  CSV.foreach("./#{filename}") do |row|
+    @name, @cohort = row[0], row[1]
+    students_push
   end
-  
-
 end
 
 def try_load_students
