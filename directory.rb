@@ -67,30 +67,30 @@ end
 
 def save_students
   filename = gets.chomp
-  file = File.open(filename, "w")
-  
-  @students.each do |student|
-    student_data = [student[:name], student[:cohort]]
-    csv_line = student_data.join(",")
-    file.puts csv_line
+  File.open(filename, "w") do |line|
+    @students.each do |student|
+      student_data = [student[:name], student[:cohort]]
+      csv_line = student_data.join(",")
+      line.puts csv_line
+    end
   end
-  file.close
 end
 
-def load_students(filename = gets.chomp)
 
-  #filename = gets.chomp
-  file = File.open(filename, "r")
-  file.readlines.each do |line|
-  @name, @cohort = line.chomp.split(',')
-  students_push
+
+def load_students(filename = gets.chomp)
+  File.open(filename,"r").readlines.each do |line|
+      @name, @cohort = line.chomp.split(',')
+      students_push
   end
-  file.close
+  
+
 end
 
 def try_load_students
   filename = ARGV.first #first argument from the command line
   if filename.nil?
+    filename = students.csv
     load_students
   elsif File.exists?(filename)
     load_students(filename)
@@ -210,3 +210,23 @@ interactive_menu
 #     i += 1
 #   end
 # end
+
+#def load_students
+#  file = File.open(filename, "r")
+#  file.readlines.each do |line|
+#  @name, @cohort = line.chomp.split(',')
+#  students_push
+#  end
+#  file.close
+
+#def save_students
+#  filename = gets.chomp
+#  file = File.open(filename, "w")
+#
+#  @students.each do |student|
+#    student_data = [student[:name], student[:cohort]]
+#    csv_line = student_data.join(",")
+#    file.puts csv_line
+#  end
+#  file.close
+#end
