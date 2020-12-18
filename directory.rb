@@ -1,23 +1,31 @@
 @students = []
 
+def students_push
+  @students << {name: @name, cohort: @cohort.to_sym}
+end
+
+def get_input
+  STDIN.gets.chop.to_sym.capitalize
+end
+
 def input_students
   puts "To finish, hit enter with no name present"
   loop do
     puts "Please enter the name of the student"
-    name = gets.chop.to_sym.capitalize
-    if name.empty?
+    @name = get_input
+    if @name.empty?
       break
     end
     puts "Please enter their cohort start date"
-    cohort = gets.chop.to_sym.capitalize
-    if cohort.empty?
-      cohort = "N/A"
+    @cohort = get_input
+    if @cohort.empty?
+      @cohort = "N/A"
     end
     puts "Is this data correct?"
-    puts "(name: #{name}) (cohort: #{cohort})"
-    yes_or_no = gets.chop
-    if yes_or_no.downcase == "yes"
-      @students << {name: name, cohort: cohort}
+    puts "(name: #{@name}) (cohort: #{@cohort})"
+    yes_or_no = get_input
+    if yes_or_no == :Yes
+      students_push
       puts "Now we have #{@students.count} students"
     end
   end
@@ -28,11 +36,8 @@ puts "The students of Villains Academy".center(40)
 puts "----------".center(40)
 end
 
-
-
-
 def print_footer
-  if @students.count < 2
+  if @students.count == 1
     puts "Overall we have 1 student"
   elsif @students.count > 1
     puts "Overall, we have #{@students.count} great students".center(40)
@@ -43,8 +48,8 @@ def print_menu
 #1. print the menu and ask the user what to do
   puts "1. Input the students"
   puts "2. Show the students"
-  puts "3. Save the list to students.csv"
-  puts "4. Load the list from students.csv"
+  puts "3. Save the list to a file"
+  puts "4. Load the list from a file"
   puts "9. Exit"
 end
 
@@ -61,9 +66,9 @@ def show_students
 end
 
 def save_students
-  #open the file for writing
-  file = File.open("students.csv", "w")
-  #iterate over the array of students
+  filename = gets.chomp
+  file = File.open(filename, "w")
+  
   @students.each do |student|
     student_data = [student[:name], student[:cohort]]
     csv_line = student_data.join(",")
@@ -72,29 +77,51 @@ def save_students
   file.close
 end
 
-def load_students
-  file = File.open("students.csv", "r")
+def load_students(filename = gets.chomp)
+
+  #filename = gets.chomp
+  file = File.open(filename, "r")
   file.readlines.each do |line|
-  name, cohort = line.chomp.split(',')
-    @students << {name: name, cohort: cohort.to_sym}
+  @name, @cohort = line.chomp.split(',')
+  students_push
   end
   file.close
 end
+
+def try_load_students
+  filename = ARGV.first #first argument from the command line
+  if filename.nil?
+    load_students
+  elsif File.exists?(filename)
+    load_students(filename)
+    puts "Loaded #{@students.count} from #{filename}"
+  else #if it doesn't exist
+    puts "Sorry, #{filename} doesn't exist"
+    exit
+  end
+end
+
 
 def interactive_menu
   loop do
     print_menu
 #2. read the input and save it into a variable
-    selection = gets.chomp
+    selection = STDIN.gets.chomp
 #3. do what the user has asked
     case selection
     when "1"
+    puts "You've selected 'Input the students'"
       input_students
     when "2"
+    puts "You've selected 'Show the students'"
       show_students
     when "3"
+    puts "You've selected 'Save the list to a file'"
+    puts "What file would you like to save to?"
       save_students
     when "4"
+    puts "You've selected 'Load the list from a file'"
+    puts "What file would you like to load?"
       load_students
     when "9"
       puts "Goodbye"
@@ -106,11 +133,11 @@ def interactive_menu
 end
 
 
-
-
-
 #nothing happens until we call the methods
+#try_load_students
 interactive_menu
+
+
 
 
 
